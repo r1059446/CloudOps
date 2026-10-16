@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f4f4f1" />
+    <meta name="description" content="Discover movies based on popular titles, genres, and movies you already know." />
+    <title>CineMatch — find your next movie</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <script src="/static/app.js" defer></script>
+  </head>
+  <body>
+    <div class="site-shell">
+      <header class="topbar">
+        <a class="brand" href="#top" aria-label="CineMatch home">
+          <span class="brand-name">cine<span>match</span></span>
+        </a>
+        <a class="docs-link" href="/docs" target="_blank" rel="noreferrer">API docs <span aria-hidden="true">↗</span></a>
+      </header>
+
+      <main>
+        <section class="hero" id="top" aria-labelledby="hero-title">
+          <div class="hero-copy">
+            <h1 id="hero-title">In the mood<br />for a good <em>movie?</em></h1>
+            <p class="hero-description">Discover something new by genre, or start with a movie you already know.</p>
+
+            <form class="search-form" id="search-form" role="search">
+              <div class="search-control">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.7" /><path d="m16 16 4.2 4.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" /></svg>
+                <input id="movie-search" name="movie" type="search" placeholder="Toy Story" aria-label="Search for a movie" autocomplete="off" aria-autocomplete="list" aria-controls="search-suggestions" aria-expanded="false" />
+                <button class="search-button" type="submit" aria-label="Search movies">Search <span aria-hidden="true">→</span></button>
+              </div>
+              <div class="suggestions" id="search-suggestions" role="listbox" aria-label="Movie titles" hidden></div>
+              <p class="search-hint">Choose a title to find movies with overlapping genres.</p>
+            </form>
+          </div>
+        </section>
+
+        <section class="discovery" id="genres" aria-labelledby="discovery-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow section-eyebrow">PICK A MOOD</p>
+              <h2 id="discovery-title">What are you in the mood for?</h2>
+            </div>
+            <button class="text-button" id="popular-button" type="button"><span class="button-sparkle">✳</span> Show popular</button>
+          </div>
+          <div class="genre-list" id="genre-list" aria-label="Choose a movie genre">
+            <span class="genre-loading">Loading genres…</span>
+          </div>
+        </section>
+
+        <section class="results-section" id="results" aria-labelledby="results-title">
+          <div class="results-heading">
+            <div>
+              <p class="eyebrow section-eyebrow" id="results-kicker">A GOOD PLACE TO START</p>
+              <h2 id="results-title">Popular with movie lovers</h2>
+              <p class="results-description" id="results-description">Top-rated movies, ranked by score and number of ratings.</p>
+            </div>
+            <span class="result-count" id="result-count" aria-live="polite"></span>
+          </div>
+
+          <div class="movie-grid" id="movie-grid" aria-live="polite" aria-busy="false"></div>
+          <div class="message-panel" id="message-panel" role="status" hidden></div>
+        </section>
+
+        <section class="how-it-works" aria-label="About CineMatch">
+          <div class="how-icon" aria-hidden="true">✳</div>
+          <div><strong>How CineMatch works.</strong><span> Movies are ranked by genre, average rating, and number of ratings.</span></div>
+          <span class="method-label">GENRE-BASED PICKS <i></i></span>
+        </section>
+      </main>
+
+    </div>
+  </body>
+</html>
