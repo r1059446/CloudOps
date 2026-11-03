@@ -1,8 +1,40 @@
 ﻿# Film Recommendation Engine — Baseline
 
+## Starten met Docker
+
+Start vanuit de hoofdmap van de repository de volledige applicatie met één commando:
+
+```powershell
+docker compose up --build
+```
+
+De webapp is beschikbaar op **http://localhost:8000** en de API-documentatie op **http://localhost:8000/docs**. De container serveert zowel de FastAPI-backend als de statische webinterface. De MovieLens-bestanden uit `data/` zitten in de image; er is geen aparte database, download of secret nodig.
+
+Stop met `Ctrl+C` en voer eventueel `docker compose down` uit om de container te verwijderen.
+
+### Poort aanpassen
+
+De standaard hostpoort is `8000`. Als die poort al bezet is, maak je in de hoofdmap een lokale `.env` op basis van de template en wijzig je `PORT`:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+`.env` wordt genegeerd door Git; commit dit bestand niet. De app gebruikt momenteel geen secrets. Bewaar eventuele secrets voor latere integraties lokaal of als GitHub Actions secrets.
+
+## Architectuur
+
+- `app/main.py`: FastAPI-routes en het serveren van de frontend.
+- `app/data_loader.py`: leest `data/movies.csv` en `data/ratings.csv` en berekent scores en aantallen stemmen.
+- `app/recommender.py`: baseline-aanbevelingen op basis van populariteit, genre en gedeelde genres.
+- `app/schemas.py`: API-responseschema's.
+- `data/`: MovieLens CSV-data die tijdens de image-build wordt opgenomen.
+
+De Docker-image gebruikt Python 3.12, installeert de vastgelegde dependencies en draait als een niet-root gebruiker. GitHub Actions bouwt de image bij elke push en pull request; publiceren en deployen vallen buiten deze milestone.
+
 ## Lokaal starten
 
-Open een terminal in deze map (`CloudOps/film-recommender`) en voer de volgende commando's uit in PowerShell:
+Open een terminal in deze map (`film-recommender`) en voer de volgende commando's uit in PowerShell:
 
 ```powershell
 python -m venv .venv

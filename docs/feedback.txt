@@ -1,0 +1,3 @@
+ai mag, maar code begrijpen en uitleggen
+weten waar en hoe data verwerkt wordt
+container (devops)
