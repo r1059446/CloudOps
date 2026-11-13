@@ -1,72 +1,39 @@
-﻿# Film Recommendation Engine — Baseline
+﻿# CloudOps — CineMatch
 
-## Starten met Docker
+## Start de volledige stack
 
-Start vanuit de hoofdmap van de repository de volledige applicatie met één commando:
+Vereisten: Git en Docker Desktop (met Docker Compose).
+
+Clone de CloudOps-repository en ga naar de hoofdmap:
+
+```powershell
+git clone https://github.com/r1059446/CloudOps.git
+cd CloudOps
+```
+
+Start daarna de applicatie vanuit de hoofdmap:
 
 ```powershell
 docker compose up --build
 ```
 
-De webapp is beschikbaar op **http://localhost:8000** en de API-documentatie op **http://localhost:8000/docs**. De container serveert zowel de FastAPI-backend als de statische webinterface. De MovieLens-bestanden uit `data/` zitten in de image; er is geen aparte database, download of secret nodig.
+Open daarna **http://localhost:1111**. De interactieve API-documentatie staat op **http://localhost:1111/docs**. Stop de stack met `Ctrl+C`; verwijder de container daarna eventueel met `docker compose down`.
 
-Stop met `Ctrl+C` en voer eventueel `docker compose down` uit om de container te verwijderen.
-
-### Poort aanpassen
-
-De standaard hostpoort is `8000`. Als die poort al bezet is, maak je in de hoofdmap een lokale `.env` op basis van de template en wijzig je `PORT`:
+De optionele `.env.example` bevat alleen de hostpoort. Standaard is dat poort 1111, maar je kunt zelf een beschikbare poort kiezen. Is poort 1111 al bezet, kopieer het bestand dan naar `.env` en pas `PORT` aan naar een beschikbare poort:
 
 ```powershell
 Copy-Item .env.example .env
 ```
 
-`.env` wordt genegeerd door Git; commit dit bestand niet. De app gebruikt momenteel geen secrets. Bewaar eventuele secrets voor latere integraties lokaal of als GitHub Actions secrets.
+`.env` wordt door Git genegeerd. De huidige applicatie heeft geen API-sleutels of andere secrets nodig. Zet secrets voor toekomstige integraties uitsluitend in een lokale `.env` of in secrets van de CI/CD-omgeving; commit ze nooit.
 
-## Architectuur
+## Opbouw
 
-- `app/main.py`: FastAPI-routes en het serveren van de frontend.
-- `app/data_loader.py`: leest `data/movies.csv` en `data/ratings.csv` en berekent scores en aantallen stemmen.
-- `app/recommender.py`: baseline-aanbevelingen op basis van populariteit, genre en gedeelde genres.
-- `app/schemas.py`: API-responseschema's.
-- `data/`: MovieLens CSV-data die tijdens de image-build wordt opgenomen.
+- `film-recommender/app/main.py` bevat de FastAPI-endpoints en serveert de webinterface.
+- `film-recommender/app/data_loader.py` laadt de MovieLens-CSV-bestanden uit `data/`.
+- `film-recommender/app/recommender.py` bevat de baseline-logica voor populaire, genre- en vergelijkbare films.
+- `film-recommender/Dockerfile` bouwt de applicatie als een niet-root container. De CSV-data wordt in de image opgenomen, zodat er geen aparte database of downloadstap nodig is.
+- `compose.yaml` start de volledige lokale stack met één service en controleert de `/health`-endpoint.
+- `.github/workflows/build.yml` bouwt de Docker-image automatisch bij elke push en pull request. De workflow publiceert de image niet.
 
-De Docker-image gebruikt Python 3.12, installeert de vastgelegde dependencies en draait als een niet-root gebruiker. GitHub Actions bouwt de image bij elke push en pull request; publiceren en deployen vallen buiten deze milestone.
-
-## Lokaal starten
-
-Open een terminal in deze map (`film-recommender`) en voer de volgende commando's uit in PowerShell:
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
-python -m uvicorn app.main:app --reload
-```
-
-Open daarna **http://127.0.0.1:8000** voor de demo. Stop de server met `Ctrl+C`.
-
-Als PowerShell het activeren van de virtuele omgeving blokkeert, kun je de omgeving ook zonder activatie gebruiken:
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
-.\.venv\Scripts\python.exe -m uvicorn app.main:app --reload
-```
-
-## Demo gebruiken
-
-- Zoek een filmtitel en kies een resultaat om aanbevelingen op basis van gedeelde genres te bekijken.
-- Kies een genre voor de best beoordeelde films binnen dat genre.
-- Bekijk de populaire films, gerangschikt op gemiddelde score en aantal beoordelingen.
-
-De filmpagina gebruikt MovieLens CSV-bestanden uit `data/`. De gemiddelde score en het aantal beoordelingen worden lokaal uit `ratings.csv` berekend. De demo haalt geen posters of andere inhoud van externe websites op.
-
-## API
-
-- `GET /health` — statuscontrole
-- `GET /genres` — beschikbare genres
-- `GET /movies?query=toy&limit=8` — zoek films op titel
-- `GET /recommendations/popular?limit=8&min_votes=20` — populaire films
-- `GET /recommendations/genre/action?limit=8` — aanbevelingen per genre
-- `GET /recommendations/similar/1?limit=8` — vergelijkbare films
-- `GET /docs` — interactieve API-documentatie
+Meer details over endpoints en lokaal ontwikkelen staan in [`film-recommender/README.md`](film-recommender/README.md). De cursusintro, het projectvoorstel en feedback staan in [`docs/`](docs/).
